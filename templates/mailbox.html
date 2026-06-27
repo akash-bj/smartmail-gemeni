@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Mailbox</title>
+
+<link rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+
+<div class="container">
+
+
+<div class="sidebar">
+    <div class="sidebar-brand">SmartMail</div>
+    <p class="sidebar-note">Simple AI inbox</p>
+
+    <ul>
+        <li>Inbox</li>
+        
+    </ul>
+</div>
+
+<div class="mail-list">
+
+    {% for email in emails %}
+
+    <a href="/mail/{{ email.id }}"
+       style="text-decoration:none;color:inherit;">
+
+        <div class="mail-item {% if selected and selected.id == email.id %}active{% endif %} tone-{{ email.tone | lower if email.tone else 'neutral' }}">
+
+            <h4>{{ email.subject }}</h4>
+
+            <p>{{ email.sender_email }}</p>
+
+        </div>
+
+    </a>
+
+    {% endfor %}
+
+</div>
+
+<div class="mail-content">
+
+    {% if analysis_error %}
+
+        <div class="empty-state">
+            <h2>Analysis unavailable</h2>
+
+            <p>
+                {{ analysis_error }}
+            </p>
+        </div>
+
+    {% endif %}
+
+    {% if selected %}
+
+        <div class="mail-header">
+            <div>
+                <h2>{{ selected.subject }}</h2>
+                <p>
+                    <strong>From:</strong>
+                    {{ selected.sender_email }}
+                </p>
+            </div>
+
+            <a href="/reanalyze/{{ selected.id }}">
+                <button class="reanalyze-btn">
+                    Re-Analyze
+                </button>
+            </a>
+        </div>
+
+        <div class="mail-card">
+            <h3>Body</h3>
+
+            <p class="mail-body">
+                {{ selected.body }}
+            </p>
+        </div>
+
+        <div class="mail-card">
+            <h3>Tone</h3>
+
+            <p>{{ selected.tone }}</p>
+        </div>
+
+        <div class="mail-card">
+            <h3>Summary</h3>
+
+            <p>{{ selected.summary }}</p>
+        </div>
+
+        <div class="mail-card">
+            <h3>Suggested Reply</h3>
+
+            <p class="mail-body">{{ selected.reply }}</p>
+        </div>
+
+    {% else %}
+
+        <div class="empty-state">
+            <h2>Select a Mail</h2>
+
+            <p>
+                Click an email from the list to view it.
+            </p>
+        </div>
+
+    {% endif %}
+
+</div>
+
+
+
+</div>
+
+</body>
+</html>
